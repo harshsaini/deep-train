@@ -47,4 +47,6 @@ jobs:
       - name: Test (examples)
         run: cd examples &&  poetry run pytest
       - name: Pre-commit (all)
-        run: poetry run pre-commit run --all-files
+        run: |
+          python -m pip install pre-commit
+          pre-commit run --all-files

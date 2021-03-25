@@ -46,7 +46,9 @@ jobs:
       - name: Test
         run: cd deep_train &&  poetry run pytest
       - name: Pre-commit
-        run: poetry run pre-commit run --all-files
+        run: |
+          python -m pip install pre-commit
+          pre-commit run --all-files
       - name: Publish
         env:
           PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
