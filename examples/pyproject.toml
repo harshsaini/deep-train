@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "examples"
 version = "0.1.0"
-description = ""
+description = "Examples of using deep-train"
 authors = ["Harsh Saini <harshsaini90@gmail.com>"]
 
 [tool.poetry.dependencies]
