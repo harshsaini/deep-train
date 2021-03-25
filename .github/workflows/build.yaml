@@ -42,11 +42,9 @@ jobs:
         run: cd deep_train && poetry install
       - name: Test (deep-train)
         run: cd deep_train &&  poetry run pytest
-      - name: Pre-commit (deep-train)
-        run: cd deep_train && poetry run pre-commit run --all-files
       - name: Install Dependencies (examples)
         run: cd examples && poetry install
       - name: Test (examples)
         run: cd examples &&  poetry run pytest
-      - name: Pre-commit (examples)
-        run: cd examples && poetry run pre-commit run --all-files
+      - name: Pre-commit (all)
+        run: poetry run pre-commit run --all-files
