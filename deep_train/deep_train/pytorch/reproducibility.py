@@ -5,6 +5,7 @@ import torch
 
 
 def seed_pytorch(seed: int) -> None:
+    """Seeds various random generators to help in reproducibility."""
     random.seed(seed)
     numpy.random.seed(seed)
     torch.manual_seed(seed)

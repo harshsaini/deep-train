@@ -2,17 +2,16 @@ import logging
 import warnings
 from typing import Dict
 from typing import Optional
-from typing import Type
 
 import tqdm
 
 from ..common.constants import DISPLAY_FLOAT_PRECISION
 from ..common.utils import count_trainable_parameters
 from ..common.utils import get_stats
-from .base_training_logic import BaseTrainingLogic
 from .checkpointer import Checkpointer
 from .contexts import EpochContext
 from .contexts import TrainContext
+from .tasks import BaseTask
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=DeprecationWarning)
@@ -25,20 +24,18 @@ logger = logging.getLogger(__name__)
 
 class Trainer:
     """
-    This class is written in a way so that users don't need to modify it.
+    This class decouples a model's definition and objective functions from it's
+    training code.
 
-    This class simply inverts the logic and decouples the model infrastructure
-    from the training code.
-
-    Note: This sample illustrates a simple use case that works well for most
-    training regimes. However, it must be noted that for more involved
-    strategies, we might want to reevalute this script.
+    The idea is to formalize best practices around training in a decoupled
+    manner so that it can be reused across different tasks without changes or
+    need of prior knowledge.
     """
 
     def __init__(
         self,
         train_context: TrainContext,
-        train_logic_cls: Type[BaseTrainingLogic],
+        task_logic: BaseTask,
         checkpointer: Optional[Checkpointer] = None,
     ) -> None:
         self.train_context = train_context
@@ -51,7 +48,7 @@ class Trainer:
             )
         )
 
-        self.task_logic = train_logic_cls()
+        self.task_logic = task_logic
 
     def train(self, num_epochs: int) -> None:
         """Generic training loop with optional checkpointing hooks."""
@@ -61,7 +58,7 @@ class Trainer:
             logger.warning("CUDA not found, using CPU backend")
 
         # Tensorboard log writer
-        writer = torch.utils.tensorboard.SummaryWriter()
+        writer = torch.utils.tensorboard.SummaryWriter(log_dir="./logs")
 
         # Load from checkpoint if available
         self.checkpointer.load_checkpoint(self.train_context)

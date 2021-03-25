@@ -6,22 +6,20 @@ from typing import Tuple
 import torch
 import tqdm
 
-from .contexts import EpochContext
-from .contexts import TrainContext
+from ..contexts import EpochContext
+from ..contexts import TrainContext
 
 logger = logging.getLogger(__name__)
 
 
-class BaseTrainingLogic:
+class BaseTask:
     """
-    This class is written in a way so that users don't need to modify it.
-
-    This class simply inverts the logic and decouples the model infrastructure
-    from the training code.
+    This class attempts to decouple task specific logic during training from a
+    model's infrastructure necessary for training.
 
     Note: This sample illustrates a simple use case that works well for most
-    training regimes. However, it must be noted that for more involved
-    strategies, we might want to reevalute this script.
+    tasks. However, it must be noted that for more involved tasks, this class
+    can be extended to cater for more diverse objectives.
     """
 
     @abc.abstractmethod

@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import List
 from typing import Optional
 from typing import Tuple
 
@@ -9,10 +8,10 @@ import torch
 import torchvision
 from sklearn.model_selection import train_test_split
 
-from deep_train.pytorch.base_training_logic import BaseTrainingLogic
 from deep_train.pytorch.checkpointer import Checkpointer
 from deep_train.pytorch.contexts import TrainContext
 from deep_train.pytorch.reproducibility import seed_pytorch
+from deep_train.pytorch.tasks import SequenceClassificationTask
 from deep_train.pytorch.trainer import Trainer
 
 logging.basicConfig(level=logging.INFO)
@@ -23,24 +22,6 @@ LABELS = list(range(NUM_LABELS))
 IMAGE_EDGE_LENGTH = 28
 NUM_CHANNELS = 1
 LABEL_MAPPINGS = {i: str(i) for i in range(NUM_LABELS)}
-
-
-class SequenceClassificationLogic(BaseTrainingLogic):
-    def compute_loss(
-        self,
-        x: torch.Tensor,
-        y: torch.Tensor,
-        y_hat: torch.Tensor,
-        extras: List[torch.Tensor],
-        train_context: TrainContext,
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        """Compute loss and return loss, expectations and predictions."""
-        expected = torch.argmax(y, dim=-1)
-        observed = y_hat.view(-1, train_context.num_labels)
-
-        loss = train_context.loss_fn(observed, expected)
-
-        return loss, expected, torch.argmax(observed, dim=-1)
 
 
 class CnnModel(torch.nn.Module):
@@ -190,8 +171,9 @@ def run(
         num_classes=NUM_LABELS,
     )
 
+    # Abstracted training logic
     trainer = Trainer(
-        train_logic_cls=SequenceClassificationLogic,
+        task_logic=SequenceClassificationTask(),
         train_context=TrainContext(
             num_labels=NUM_LABELS,
             model=model,
@@ -200,7 +182,7 @@ def run(
             train_dataloader=train_dataloader,
             dev_dataloader=dev_dataloader,
         ),
-        checkpointer=Checkpointer(),
+        checkpointer=Checkpointer(disable_checkpoints=True),
     )
 
     trainer.train(num_epochs=num_train_epochs)
