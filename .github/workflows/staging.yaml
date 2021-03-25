@@ -54,6 +54,5 @@ jobs:
         run: |
           cd deep_train
           poetry config pypi-token.pypi $PYPI_API_TOKEN
-          poetry build
           poetry config repositories.pypi https://test.pypi.org/legacy/
-          poetry publish -r pypi
+          poetry publish --build -r pypi
