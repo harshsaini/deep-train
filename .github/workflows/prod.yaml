@@ -37,18 +37,22 @@ jobs:
       - name: Ensure cache is healthy
         if: steps.cache.outputs.cache-hit == 'true'
         run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
-      - name: Install Dependencies
+      - name: Install Dependencies (deep-train)
         run: cd deep_train && poetry install
-      - name: Test
+      - name: Test (deep-train)
         run: cd deep_train &&  poetry run pytest
-      - name: Pre-commit
+      - name: Install Dependencies (examples)
+        run: cd examples && poetry install
+      - name: Test (examples)
+        run: cd examples &&  poetry run pytest
+      - name: Pre-commit (all)
         run: |
           python -m pip install pre-commit
           pre-commit run --all-files
       - name: Publish
         env:
-          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           cd deep_train
-          poetry config pypi-token.pypi $PYPI_API_TOKEN
-          poetry publish --build -r pypi
+          poetry config pypi-token.pypi $POETRY_PYPI_TOKEN_PYPI
+          poetry publish --build
