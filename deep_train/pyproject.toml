@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "deep-train"
-version = "0.1.0"
+version = "0.1.1-alpha.0"
 description = "Decoupled training for PyTorch"
 authors = ["Harsh Saini <harshsaini90@gmail.com>"]
 
