@@ -1,8 +1,16 @@
 [tool.poetry]
 name = "deep-train"
-version = "0.1.1-alpha.0"
+version = "0.1.1-alpha.3"
 description = "Decoupled training for PyTorch"
 authors = ["Harsh Saini <harshsaini90@gmail.com>"]
+license = "MIT"
+readme = "README.rst"
+homepage = "https://github.com/harshsaini/deep-train"
+repository = "https://github.com/harshsaini/deep-train"
+include = [
+    "LICENSE",
+]
+keywords = ["deep_neural_networks", "pytorch", "deepnet", "training"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
