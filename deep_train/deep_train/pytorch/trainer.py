@@ -70,6 +70,7 @@ class Trainer:
         )
         logger.info("Beginning training loop...")
 
+        self.train_context.model.to(self.train_context.torch_device)
         for epoch in range(self.checkpointer.starting_epoch, num_epochs):
             self.train_context.optimizer.zero_grad()
             epoch_context = self.task_logic.process_epoch(self.train_context)
